@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -17,10 +17,18 @@ async function run() {
         const contentsCollection = client.db('hrwindow').collection('contents');
 
         app.get('/contents', async (req, res) => {
+            const limit = parseInt(req.query.limit);
             const query = {};
             const cursor = contentsCollection.find(query);
-            const contents = await cursor.limit(0).toArray();
+            const contents = await cursor.limit(limit).toArray();
             res.send(contents);
+        })
+
+        app.get('/contents/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const content = await contentsCollection.findOne(query);
+            res.send(content);
         })
     } finally {
 
