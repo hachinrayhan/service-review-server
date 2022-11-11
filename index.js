@@ -16,6 +16,7 @@ async function run() {
     try {
         const contentsCollection = client.db('hrwindow').collection('contents');
 
+        //get by limit
         app.get('/contents', async (req, res) => {
             const limit = parseInt(req.query.limit);
             const query = {};
@@ -24,12 +25,28 @@ async function run() {
             res.send(contents);
         })
 
+        //get by id
         app.get('/contents/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const content = await contentsCollection.findOne(query);
             res.send(content);
         })
+
+        app.patch('/contents/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const newReview = req.body;
+            const options = { upsert: true };
+            const addReview = {
+                $push: {
+                    reviews: newReview
+                }
+            }
+            const result = await contentsCollection.updateOne(filter, addReview, options);
+            res.send(result);
+        })
+
     } finally {
 
     }
