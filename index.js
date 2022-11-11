@@ -25,7 +25,7 @@ async function run() {
             res.send(contents);
         })
 
-        //get by id
+        //get content by id
         app.get('/contents/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -33,6 +33,7 @@ async function run() {
             res.send(content);
         })
 
+        //add review by id
         app.patch('/contents/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
